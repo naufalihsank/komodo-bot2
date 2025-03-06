@@ -2,9 +2,9 @@ import requests
 from telegram import Update
 from telegram.ext import Application, MessageHandler, filters, CallbackContext
 
-TOKEN = "7901697973:AAERbQl7LTr3puUzBc5DtG6dFHAzkxNxIbY"
+TOKEN = "7901697973:AAEwYJWXs3JeAw8HbGKYmsOk9hYYuD6lGfg"
 BASE_URL = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
-CHAT_ID = "-4659822256"
+CHAT_ID = "-1002278663540"
 
 
 async def reply(update: Update, context: CallbackContext):
@@ -12,16 +12,15 @@ async def reply(update: Update, context: CallbackContext):
 
     if "SC_ORDER" in message_text:
         order_code = message_text.split("SC_ORDER")[1].strip()
+        print("order code: ", order_code)
         await get_status(order_code)
-    else:
-        await send_msg(f"Kamu berkata: {message_text}")
 
 
 async def send_msg(text):
     """Mengirim pesan ke chat ID tertentu."""
     parameters = {"chat_id": CHAT_ID, "text": text, "parse_mode": "Markdown"}
     response = requests.get(BASE_URL, params=parameters)
-    print(response.text)
+    # print(response.text)
 
 
 async def get_status(order_code):
@@ -33,15 +32,24 @@ async def get_status(order_code):
         response = requests.post(url, json=body)
         response.raise_for_status()
         workorders = response.json().get("workorders", [])
+        # print("work order: ", workorders)
 
         if not workorders:
-            await send_msg("ORDER TIDAK DITEMUKAN!!! :(")
+            msg = f"ORDER {order_code} TIDAK DITEMUKAN !!! :("
+            await send_msg(msg)
             return
 
         # Ambil workorder terbaru
         data = sorted(
             workorders, key=lambda x: x.get("datemodified", ""), reverse=True
         )[0]
+
+        print("last workorder: ", data)
+
+        # if data:  # Check if data is not None or an empty dictionary
+        #     await send_msg("Data tidak kosong")
+        # else:
+        #     await send_msg("Data kosong")
 
         output = f"""
 *SC ORDER*      : {order_code}
@@ -50,12 +58,15 @@ async def get_status(order_code):
 *STATUS*        : {data.get('c_status', 'N/A')}
 *ORDER TYPE*    : {data.get('c_crmordertype', 'N/A')}
 *OWNER GROUP*   : {data.get('c_ownergroup', 'N/A')}
+*WORKORDER*     : {data.get('c_wonum', 'N/A')}
+*REGIONAL*      : {data.get('c_siteid', 'N/A')}
 """
 
         await send_msg(output)
 
     except requests.exceptions.RequestException:
-        await send_msg("ORDER TIDAK DITEMUKAN!!! :(")
+        print(f"Exception: {requests.exceptions.RequestException}")
+        await send_msg("exception: ORDER TIDAK DITEMUKAN!!! :(")
 
 
 def main():
