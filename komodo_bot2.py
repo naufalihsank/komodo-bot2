@@ -53,12 +53,14 @@ async def get_status(order_code):
 
         output = f"""
 *SC ORDER*      : {order_code}
+*WORKORDER*     : {data.get('c_wonum', 'N/A')}
+*COSTUMER NAME* : {data.get('c_customer_name', 'N/A')}
 *DESKRIPSI*     : {data.get('c_description', 'N/A')}
 *DATE MODIFIED* : {data.get('datemodified', 'N/A')}
-*STATUS*        : {data.get('c_status', 'N/A')}
 *ORDER TYPE*    : {data.get('c_crmordertype', 'N/A')}
+*STATUS*        : {data.get('c_status', 'N/A')}
 *OWNER GROUP*   : {data.get('c_ownergroup', 'N/A')}
-*WORKORDER*     : {data.get('c_wonum', 'N/A')}
+*WORK ZONE*     : {data.get('c_workzone', 'N/A')}
 *REGIONAL*      : {data.get('c_siteid', 'N/A')}
 """
 
