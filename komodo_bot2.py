@@ -1,10 +1,11 @@
 import requests
+import os
 from telegram import Update
 from telegram.ext import Application, MessageHandler, filters, CallbackContext
 
-TOKEN = "7901697973:AAEwYJWXs3JeAw8HbGKYmsOk9hYYuD6lGfg"
+TOKEN = os.getenv("BOT_TOKEN")
 BASE_URL = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
-CHAT_ID = "-1002278663540"
+CHAT_ID = os.getenv("CHAT_ID")
 
 
 async def reply(update: Update, context: CallbackContext):
