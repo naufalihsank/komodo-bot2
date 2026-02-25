@@ -2,7 +2,9 @@ import requests
 import os
 from telegram import Update
 from telegram.ext import Application, MessageHandler, filters, CallbackContext
+from dotenv import load_dotenv
 
+load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
 BASE_URL = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
 CHAT_ID = os.getenv("CHAT_ID")
